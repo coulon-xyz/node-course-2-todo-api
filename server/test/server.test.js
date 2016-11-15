@@ -8,9 +8,9 @@ var todosLength;
 
 beforeEach((done) => {
   Todo.find().then((todos) => {
-    todosLength = todos.length
-    done()
-  })
+    todosLength = todos.length;
+  });
+  done();
 })
 
 describe('POST /todos', () => {
