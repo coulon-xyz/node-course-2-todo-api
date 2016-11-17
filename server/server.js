@@ -7,6 +7,7 @@ var {Todo} = require('./models/todo');
 var {User} = require('./models/User');
 
 var app = express();
+const port = process.env.PORT || 3000
 
 //middleware is bodyParser, we can now send json to express
 app.use(bodyParser.json());
@@ -36,7 +37,7 @@ app.get('/todos/:id', (req,res) => {
 
   // check if id is valid
   if (!ObjectID.isValid(id)) {
-    res.status(400).send({error: 'invalid ID format'});
+    res.status(404).send({error: 'invalid ID format'});
   };
 
   Todo.findById(id).then((todo) => {
@@ -44,13 +45,12 @@ app.get('/todos/:id', (req,res) => {
       return res.status(404).send({error: 'ID not found'});
     }
     res.send({todo});
-  }).catch((e) => res.status(400).send(e)
+  }).catch((e) => res.status(404).send(e)
     );
 })
 
-app.listen(3000 , () => {
-  console.log("Server started on port 3000")
+app.listen(port , () => {
+  console.log(`Server started on port ${port}`)
 });
-
 
 module.exports = {app};
