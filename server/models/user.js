@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs')
 
 var UserSchema = new mongoose.Schema(
   {
@@ -76,6 +77,25 @@ UserSchema.statics.findByToken = function (token) {
 return User.findOne(searchObject);
 
 };
+
+// mongoose middleware
+UserSchema.pre('save', function (next) {
+  var user = this;
+  // if statement to prevent password to be hashed multiple time
+  if (user.isModified('password')) {
+    //genSalt (number of rounds, callback)
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(user.password, salt, (err, hash) => {
+          user.password = hash;
+          console.log("hash", hash);
+          console.log("user.password", user.password);
+          next();
+      });
+    });
+  } else {
+    next();
+  }
+})
 
 var User = mongoose.model('user', UserSchema);
 
