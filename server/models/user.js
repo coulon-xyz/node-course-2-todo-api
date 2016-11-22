@@ -61,7 +61,6 @@ UserSchema.statics.findByToken = function (token) {
 
   try {
     decoded = jwt.verify(token, 'abc123');
-    console.log("decoded: ", decoded);
   } catch (e) {
     return new Promise((resolve, reject) => {
       reject();
@@ -87,8 +86,6 @@ UserSchema.pre('save', function (next) {
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(user.password, salt, (err, hash) => {
           user.password = hash;
-          console.log("hash", hash);
-          console.log("user.password", user.password);
           next();
       });
     });
